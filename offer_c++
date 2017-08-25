@@ -1,0 +1,137 @@
+//
+//  main.cpp
+//  offer
+//
+//  Created by liyadong on 8/25/17.
+//  Copyright © 2017 Liyd. All rights reserved.
+//
+
+#include <map>
+#include <list>
+#include <vector>
+#include <iostream>
+using namespace std;
+
+//计算模式P的部分匹配值，保存在next数组中
+void MakeNext(const string &P, vector<int> &next)
+{
+    int q,k;//k记录所有前缀的对称值
+    int m = P.size();//模式字符串的长度
+    next[0] = 0;//首字符的对称值肯定为0
+    for (q = 1, k = 0; q < m; ++q)//计算每一个位置的对称值
+    {
+        //k总是用来记录上一个前缀的最大对称值
+        while (k > 0 && P[q] != P[k])
+            k = next[k - 1];//k将循环递减，值得注意的是next[k]<k总是成立
+        if (P[q] == P[k])
+            k++;//增加k的唯一方法
+        next[q] = k;//获取最终值
+    }
+}
+
+
+void KmpMatch(const string &T, const string &P, vector<int> &next)
+{
+    int n, m;
+    n = T.size();
+    m = P.size();
+    MakeNext(P, next);
+    for (int i = 0, q = 0; i < n; ++i)
+    {
+        while (q > 0 && P[q] != T[i])
+            q = next[q - 1];
+        if (P[q] == T[i])
+            q++;
+        if (q == m)
+        {
+            cout << "模式文本的偏移为：" << (i - m + 1) << endl;
+            q = next[q - 1];//寻找下一个匹配
+        }
+    }
+}
+
+int main()
+{
+    system("color 0A");
+    vector<int> next(20,0);//保存待搜索字符串的部分匹配表（所有前缀函数的对称值）
+    string T = "xyxababcaxxxababca";//文本
+    string P = "abcdabceabc";//待搜索字符串
+    cout <<"文本字符串："<< T << endl;
+    cout <<"模式字符串："<< P << endl;
+    KmpMatch(T, P, next);
+    cout << "模式字符串的前缀函数表："<< endl;
+    for (int i = 0; i < P.size(); i++)
+        cout<< next[i];
+    cout << endl;
+    system("pause");
+    return 0;
+}
+
+
+//int main(int argc, const char * argv[]) {
+//    // insert code here...
+//    cout << "Hello, World!\n";
+//    vector<int> vec1;
+//    vector<int> vec5(10,4);
+//    vec1.push_back(100);
+//    vec1.insert(vec1.begin(), 5, 3);
+//    int size = vec1.size();
+//    cout << size << "\n";
+//    vector<int>::iterator iter = vec1.begin();
+//    for(;iter != vec1.end();iter++)
+//    {
+//        cout<<*iter << " ";
+//    }
+//    cout << "\n";
+//    
+//    list<int> lst1(3,2);
+//    list<int>::iterator iter2 = lst1.begin();
+//    cout << lst1.front();;
+//    cout << "\n";
+//    
+//    map<int,string> map1;
+//    map1[3] = "Saniya";
+//    map1.insert(pair<int,string>(1,"Siqinsini"));
+//    map<int,string>::iterator iter3 = map1.begin();
+//    for(iter3;iter3!=map1.end();iter3++)
+//    {
+//        int keyk = iter3->first;
+//        string valuev = iter3->second;
+//        cout << keyk << " "<< valuev <<endl;
+//    }
+   
+    
+    
+//    int m,n;
+//    cin >> m >> n;
+//    vector<int> a(n);
+//    for(int i=0; i<n; i++){
+//        cin >> a[i];
+//    }
+//    vector<vector<int> > vv(m);
+//    vector<int>::iterator iter = a.begin();
+//    for(;iter<a.end();iter++){
+//        int yushu = *iter % m;
+//        vv[yushu].push_back(*iter);
+//    }
+//    
+//    for (int i=0; i<m; i++){
+//        cout << "余数是" << i << "的有： ";
+//        if(vv[i].size() != 0){
+//            sort(vv[i].begin(), vv[i].end());
+//            for (vector<int>::iterator j =vv[i].begin();j<vv[i].end();j++){
+//                cout << *j << " ";
+//            }
+//        }
+//        cout << endl;
+//        
+//    }
+//    
+//
+//    cout << "yes" << endl;
+    
+    
+    
+    
+//    return 0;
+//}
